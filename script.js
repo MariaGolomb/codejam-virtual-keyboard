@@ -271,7 +271,6 @@ const Keyboard = {
           keyElement.textContent = keyChar;
 
           keyElement.addEventListener('click', () => {
-            debugger
             if (this.properties.shift !== this.properties.capsLock) {
               if (this.properties.shift === true) { this.toggleShift(); }
               this.properties.value += keyChar.toUpperCase();
