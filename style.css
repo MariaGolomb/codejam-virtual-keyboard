@@ -46,15 +46,25 @@
   vertical-align: top;
   padding: 0;
   position: relative;
+  /*
+        :active {
+            background: rgba(102, 153, 255, 0.151); //~
+        }
+        */
 }
 
 .keyboard--key-pushed {
-  background-color: #0a5bfc;
+  background-color: #022e81;
   border-radius: 15%;
 }
 
 .keyboard--key:hover {
   background-color: #0a5bfc;
+}
+
+.keyboard--key:active {
+  background-color: #022e81;
+  border-radius: 15%;
 }
 
 .keyboard--key_wide {
@@ -64,10 +74,6 @@
 .keyboard--key_wide_extra {
   width: 36%;
   max-width: 500px;
-}
-
-.keyboard--key :active {
-  background: rgba(102, 153, 255, 0.151);
 }
 
 .keyboard--key-activated::after {
@@ -87,5 +93,9 @@
 
 .keyboard--key_dark {
   background: rgba(0, 0, 0, 0.4);
+}
+
+.red {
+  background: red;
 }
 /*# sourceMappingURL=style.css.map */
