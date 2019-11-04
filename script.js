@@ -271,11 +271,13 @@ const Keyboard = {
           keyElement.textContent = keyChar;
 
           keyElement.addEventListener('click', () => {
-            if (this.properties.shift === true) {
+            debugger
+            if (this.properties.shift !== this.properties.capsLock) {
+              if (this.properties.shift === true) { this.toggleShift(); }
               this.properties.value += keyChar.toUpperCase();
-              this.toggleShift();
             } else {
-              this.properties.value += keyChar;
+              if (this.properties.shift === true) { this.toggleShift(); }
+              this.properties.value += keyChar.toLowerCase();
             }
             this.triggerEvent('oninput');
           });
