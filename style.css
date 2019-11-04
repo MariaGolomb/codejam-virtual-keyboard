@@ -4,7 +4,8 @@
 }
 
 .textarea {
-  width: 80%;
+  width: 100%;
+  height: 50%;
   position: absolute;
 }
 
@@ -15,11 +16,7 @@
   width: 100%;
   padding: 5px 0;
   background: rgba(153, 204, 255, 0.9);
-  height: 100px;
-}
-
-.keyboard--hidden {
-  bottom: -100%;
+  height: auto;
 }
 
 .keyboard--keys {
@@ -36,6 +33,7 @@
   background: #6699ff;
   color: white;
   cursor: pointer;
+  border: 0;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -48,6 +46,15 @@
   vertical-align: top;
   padding: 0;
   position: relative;
+}
+
+.keyboard--key-pushed {
+  background-color: #0a5bfc;
+  border-radius: 15%;
+}
+
+.keyboard--key:hover {
+  background-color: #0a5bfc;
 }
 
 .keyboard--key_wide {
