@@ -1,6 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-restricted-syntax */
 const Keyboard = {
   elements: {
     input: null,
@@ -8,10 +5,10 @@ const Keyboard = {
     keysContainer: null,
     keysEventCode: [
       '192', '49', '50', '51', '52', '53', '54', '55', '56', '57', '48', '189', '187', '8',
-      '9', '81', '87', '69', '82', '84', '89', '85', '73', '79', '80', '219', '221', '13',
+      '81', '87', '69', '82', '84', '89', '85', '73', '79', '80', '219', '221', '13',
       '20', '65', '83', '68', '70', '71', '72', '74', '75', '76', '186', '222',
       '16', '226', '90', '88', '67', '86', '66', '78', '77', '188', '190', '191',
-      '17', '91', '18', '32'],
+      '17', '32'],
     keys: [],
 
   },
@@ -25,7 +22,7 @@ const Keyboard = {
     capsLock: false,
     shift: false,
     ctrl: false,
-    lng: '',
+    lng: null,
 
     alphabetEn: {
       192: '`',
@@ -74,6 +71,7 @@ const Keyboard = {
       188: ',',
       190: '.',
       191: '/',
+      226: '\\',
     },
 
     alphabetRu: {
@@ -123,6 +121,7 @@ const Keyboard = {
       188: ',',
       190: '.',
       191: '/',
+      226: '\\',
     },
 
   },
@@ -132,19 +131,16 @@ const Keyboard = {
     this.elements.input.id = 'use-keyboard';
     this.elements.input.setAttribute('autofocus', 'true');
     document.body.appendChild(this.elements.input);
-    this.properties.lng = 'EN';
   },
 
   initKeyboard() {
     // create main elements
     this.elements.main = document.createElement('div');
     this.elements.keysContainer = document.createElement('div');
-
     // setup main elements
     this.elements.main.classList.add('keyboard');
     this.elements.keysContainer.classList.add('keyboard--keys');
     this.elements.keysContainer.appendChild(this.createKeys());
-
     this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard--key');
 
     // add to DOM
@@ -153,17 +149,34 @@ const Keyboard = {
 
     // use keybord for element whith id use-keyboard
     const input = document.getElementById('use-keyboard');
-
     this.open((currentValue) => { input.value = currentValue; });
+  },
 
+  changeLanguageWithKeyboard() {
+    document.addEventListener('keydown', (event) => {
+      if (event.shiftKey && event.keyCode === 32) {
+        this.changeLanguage();
+      }
+    });
+  },
+
+  highlightKey() {
     document.addEventListener('keydown', (event) => {
       document.getElementById(event.keyCode).classList.add('keyboard--key-pushed');
     });
 
     document.addEventListener('keyup', (event) => {
       document.getElementById(event.keyCode).classList.remove('keyboard--key-pushed');
-      this.properties.value = input.value;
+      this.properties.value = document.getElementById('use-keyboard').value;
     });
+  },
+
+  saveSelectedLanguage() {
+    sessionStorage.setItem('languageForKeyboard', this.properties.lng);
+  },
+
+  takeLanguage() {
+    this.properties.lng = sessionStorage.getItem('languageForKeyboard') ? sessionStorage.getItem('languageForKeyboard') : 'EN';
   },
 
   defineChar(lng, keyEventCode) {
@@ -237,8 +250,7 @@ const Keyboard = {
           keyElement.addEventListener('click', () => {
             if (this.properties.shift === true) {
               this.properties.shift = false;
-              this.properties.lng === 'EN' ? this.properties.lng = 'RU' : this.properties.lng = 'EN';
-              this.initKeyboard();
+              this.changeLanguage();
             } else {
               this.properties.value += ' ';
               this.triggerEvent('oninput');
@@ -266,17 +278,14 @@ const Keyboard = {
           break;
 
         default:
-          // eslint-disable-next-line no-case-declarations
-          const keyChar = this.defineChar(this.properties.lng, key);
-          keyElement.textContent = keyChar;
-
+          keyElement.textContent = this.defineChar(this.properties.lng, key);
           keyElement.addEventListener('click', () => {
             if (this.properties.shift !== this.properties.capsLock) {
               if (this.properties.shift === true) { this.toggleShift(); }
-              this.properties.value += keyChar.toUpperCase();
+              this.properties.value += keyElement.textContent.toUpperCase();
             } else {
               if (this.properties.shift === true) { this.toggleShift(); }
-              this.properties.value += keyChar.toLowerCase();
+              this.properties.value += keyElement.textContent.toLowerCase();
             }
             this.triggerEvent('oninput');
           });
@@ -293,6 +302,15 @@ const Keyboard = {
     return fragment;
   },
 
+  changeLanguage() {
+    if (this.properties.lng === 'EN') {
+      this.properties.lng = 'RU';
+    } else {
+      this.properties.lng = 'EN';
+    }
+    document.querySelector('.keyboard').remove();
+    this.initKeyboard();
+  },
 
   triggerEvent(handlerName) {
     this.eventHandlers[handlerName](this.properties.value);
@@ -300,48 +318,56 @@ const Keyboard = {
 
   setUpperCase() {
     if (this.properties.lng === 'EN') {
-      for (const key of this.elements.keys) {
+      [...this.elements.keys].forEach((key) => {
         if (key.id > 64 && key.id < 91) {
-          key.textContent = key.textContent.toUpperCase();
+          key.classList.add('upCase');
         }
-      }
+      });
     }
 
     if (this.properties.lng === 'RU') {
-      for (const key of this.elements.keys) {
+      [...this.elements.keys].forEach((key) => {
         if ((key.id > 64 && key.id < 91) || (['192', '186', '219', '221', '222'].includes(key.id))) {
-          key.textContent = key.textContent.toUpperCase();
+          key.classList.add('upCase');
         }
-      }
+      });
     }
   },
 
   setLowerCase() {
     if (this.properties.lng === 'EN') {
-      for (const key of this.elements.keys) {
+      [...this.elements.keys].forEach((key) => {
         if (key.id > 64 && key.id < 91) {
-          key.textContent = key.textContent.toLowerCase();
+          key.classList.remove('upCase');
         }
-      }
+      });
     }
 
     if (this.properties.lng === 'RU') {
-      for (const key of this.elements.keys) {
+      [...this.elements.keys].forEach((key) => {
         if ((key.id > 64 && key.id < 91) || (['192', '186', '219', '221', '222'].includes(key.id))) {
-          key.textContent = key.textContent.toLowerCase();
+          key.classList.remove('upCase');
         }
-      }
+      });
     }
   },
 
   toggleCapsLock() {
     this.properties.capsLock = !this.properties.capsLock;
-    this.properties.capsLock ? this.setUpperCase() : this.setLowerCase();
+    if (this.properties.capsLock) {
+      this.setUpperCase();
+    } else {
+      this.setLowerCase();
+    }
   },
 
   toggleShift() {
     this.properties.shift = !this.properties.shift;
-    this.properties.shift ? this.setUpperCase() : this.setLowerCase();
+    if (this.properties.shift !== this.properties.capsLock) {
+      this.setUpperCase();
+    } else {
+      this.setLowerCase();
+    }
     document.getElementById('16').classList.toggle('keyboard--key-pushed', this.properties.shift);
   },
 
@@ -356,7 +382,14 @@ const Keyboard = {
 };
 
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
   Keyboard.initInput();
+  Keyboard.takeLanguage();
   Keyboard.initKeyboard();
+  Keyboard.highlightKey();
+  Keyboard.changeLanguageWithKeyboard();
+});
+
+window.addEventListener('unload', () => {
+  Keyboard.saveSelectedLanguage();
 });

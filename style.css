@@ -46,11 +46,6 @@
   vertical-align: top;
   padding: 0;
   position: relative;
-  /*
-        :active {
-            background: rgba(102, 153, 255, 0.151); //~
-        }
-        */
 }
 
 .keyboard--key-pushed {
@@ -95,7 +90,7 @@
   background: rgba(0, 0, 0, 0.4);
 }
 
-.red {
-  background: red;
+.upCase {
+  text-transform: uppercase;
 }
 /*# sourceMappingURL=style.css.map */
